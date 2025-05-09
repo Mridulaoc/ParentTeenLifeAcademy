@@ -29,7 +29,7 @@ const app: Express = express();
 
 app.use(passport.initialize());
 const corsOptions: CorsOptions = {
-  origin: ["http://localhost:5173"],
+  origin: process.env.CLIENT_URL,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
   allowedHeaders: ["Content-Type", "Authorization"],
   exposedHeaders: ["Content-Range", "X-Content-Range"],
@@ -78,7 +78,7 @@ const SECRET_KEY = process.env.JWT_SECRET_KEY || "your_secret_key";
 const activeUsers = new Map();
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: process.env.CLIENT_URL,
     methods: ["GET", "POST"],
     credentials: true,
   },

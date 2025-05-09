@@ -7,6 +7,7 @@ export const connectDatabase = async (): Promise<void> => {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     } as ConnectOptions);
+    console.log("Connected to Mongodb Atlas");
   } catch (error) {
     console.error("Error connecting to the database:", error);
     process.exit(1);
