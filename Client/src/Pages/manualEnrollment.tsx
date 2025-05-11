@@ -126,7 +126,10 @@ const ManualEnrollmentPage = () => {
       dispatch(fetchAllUsers({ page, limit }));
       setAllUsersFetched(true);
     } catch (error) {
-      toast.error(error.message || "Failed to enroll user");
+      if (error instanceof Error) {
+        toast.error(error.message);
+      }
+      toast.error("Failed to enroll user");
     }
   };
 

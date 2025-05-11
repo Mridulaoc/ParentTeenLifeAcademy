@@ -39,6 +39,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { compressImage, convertToFile } from "../Utils/imageCompression";
 import { toast } from "react-toastify";
 import { uploadFeaturedImage } from "../Features/courseSlice";
+import { IBundleUpdateData } from "../Types/courseBundleTypes";
 
 const bundleSchema = z.object({
   title: z
@@ -98,10 +99,10 @@ const BundleEdit = () => {
 
   useEffect(() => {
     if (currentBundle) {
-      setValue("title", currentBundle.title);
-      setValue("description", currentBundle.description);
-      setValue("discountedPrice", currentBundle.discountedPrice);
-      setValue("featuredImage", currentBundle.featuredImage);
+      setValue("title", currentBundle.title!);
+      setValue("description", currentBundle.description!);
+      setValue("discountedPrice", currentBundle.discountedPrice!);
+      setValue("featuredImage", currentBundle.featuredImage!);
     }
   }, [currentBundle, setValue]);
 
@@ -148,7 +149,7 @@ const BundleEdit = () => {
   const validateDiscountedPrice = () => {
     if (!currentBundle) return true;
     const currentDiscountedPrice = watch("discountedPrice");
-    return currentDiscountedPrice < currentBundle.totalPrice;
+    return currentDiscountedPrice < currentBundle.totalPrice!;
   };
 
   const onSubmit = async (data: BundleFormValues) => {
@@ -165,15 +166,20 @@ const BundleEdit = () => {
         featuredImageUrl = result.url;
       }
 
-      const bundleData = {
+      const bundleData: IBundleUpdateData = {
         ...data,
-        featuredImage: featuredImageUrl,
-        totalPrice: currentBundle.courses.reduce(
-          (total, course) => (total = total + course.price),
-          0
-        ),
-        courses: currentBundle.courses.map((course) => course._id),
+        featuredImage: featuredImageUrl ?? "",
+        totalPrice:
+          currentBundle.courses?.reduce(
+            (total, course) => (total = total + course.price),
+            0
+          ) ?? 0,
+        courses: currentBundle.courses?.map((course) => course._id) ?? [],
       };
+      if (!bundleId) {
+        toast.error("Invalid bundle ID");
+        return;
+      }
       await dispatch(updateBundle({ bundleData, bundleId }));
       toast.success("Bundle updated successfully!");
       navigate("/admin/dashboard/bundles");
@@ -182,6 +188,8 @@ const BundleEdit = () => {
       toast.error("An unexpected error occurred");
     }
   };
+
+  const selectedCourses = currentBundle?.courses ?? [];
 
   if (loading && !currentBundle) {
     return (
@@ -322,7 +330,7 @@ const BundleEdit = () => {
                       <MenuItem
                         key={course._id}
                         value={course._id}
-                        disabled={currentBundle?.courses.some(
+                        disabled={selectedCourses.some(
                           (c) => c._id === course._id
                         )}
                       >
@@ -333,14 +341,14 @@ const BundleEdit = () => {
                 </FormControl>
                 <Box mt={3}>
                   <Typography variant="subtitle1" gutterBottom>
-                    Selected Courses({currentBundle?.courses.length || 0})
+                    Selected Courses({selectedCourses.length || 0})
                   </Typography>
-                  {!currentBundle?.courses.length && (
+                  {!selectedCourses.length && (
                     <Typography variant="body2" color="textSecondary">
                       No courses selected yet. Please select at least one course
                     </Typography>
                   )}
-                  {currentBundle?.courses.map((course) => (
+                  {selectedCourses.map((course) => (
                     <Card key={course._id} sx={{ mb: 2 }}>
                       <Box sx={{ display: "flex" }}>
                         <CardMedia
@@ -401,7 +409,7 @@ const BundleEdit = () => {
                     color="primary"
                     type="submit"
                     disabled={
-                      !currentBundle?.courses.length ||
+                      !(selectedCourses.length ?? 0) ||
                       !validateDiscountedPrice()
                     }
                   >

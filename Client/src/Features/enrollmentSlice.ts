@@ -112,7 +112,7 @@ const enrollmentSlice = createSlice({
       })
       .addCase(fetchCourses.fulfilled, (state, action) => {
         state.courseLoading = false;
-        state.courses = action.payload;
+        state.courses = action.payload.courses;
       })
       .addCase(fetchCourses.rejected, (state, action) => {
         state.courseLoading = false;

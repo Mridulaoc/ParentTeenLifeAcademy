@@ -68,10 +68,7 @@ const OrderHistory: React.FC = () => {
     setOpenModal(false);
   };
 
-  const handlePageChange = (
-    event: React.ChangeEvent<unknown>,
-    value: number
-  ) => {
+  const handlePageChange = (_: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
   };
 
@@ -138,13 +135,22 @@ const OrderHistory: React.FC = () => {
               result.redirectedTo ||
                 `/paymentSuccess?reference=${razorpay_payment_id}`
             );
-          } catch (error) {
-            const errorMessage =
-              error.message || "Payment verification failed. Please try again.";
+          } catch (error: unknown) {
+            let errorMessage = "Payment verification failed. Please try again.";
+
+            let redirectedTo = `/payment-failed?orderId=${orderId}&error=verification_failed`;
+
+            if (typeof error === "object" && error !== null) {
+              const maybeError = error as {
+                message?: string;
+                redirectedTo?: string;
+              };
+              if (maybeError.message) errorMessage = maybeError.message;
+              if (maybeError.redirectedTo)
+                redirectedTo = maybeError.redirectedTo;
+            }
+
             toast.error(errorMessage);
-            const redirectedTo =
-              error.redirectedTo ||
-              `/payment-failed?orderId=${orderId}&error=verification_failed`;
             rzp.close();
             navigate(redirectedTo);
           }
@@ -152,7 +158,7 @@ const OrderHistory: React.FC = () => {
         modal: {
           escape: false,
           confirm_close: true,
-          ondismiss: async function (event: any) {
+          ondismiss: async function () {
             if (isCancelling) return;
             setIsCancelling(true);
 
@@ -297,7 +303,9 @@ const OrderHistory: React.FC = () => {
                   </TableCell>
                   <TableCell>{order.items?.length}</TableCell>
                   <TableCell>
-                    {order.subtotal - order.discount + order.tax}
+                    {(order.subtotal ?? 0) -
+                      (order.discount ?? 0) +
+                      (order.tax ?? 0)}
                   </TableCell>
                   <TableCell>
                     <Chip
@@ -468,9 +476,9 @@ const OrderHistory: React.FC = () => {
                         <Typography fontWeight="bold">
                           Total: ₹
                           {selectedOrder
-                            ? selectedOrder.subtotal -
-                              selectedOrder.discount +
-                              selectedOrder.tax
+                            ? (selectedOrder.subtotal ?? 0) -
+                              (selectedOrder.discount ?? 0) +
+                              (selectedOrder.tax ?? 0)
                             : 0}
                         </Typography>
                       </Box>

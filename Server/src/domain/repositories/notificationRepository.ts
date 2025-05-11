@@ -20,7 +20,7 @@ export interface INotificationRepository {
   delete(id: string): Promise<boolean>;
   fetchUsers(): Promise<IUser[] | null>;
   fetchCourses(): Promise<ICourse[] | null>;
-  fetchBundles(): Promise<ICourseBundle[] | null>;
+  fetchBundles(): Promise<{ bundles: ICourseBundle[]; total: number }>;
   fetchTargetUsers(entityType: string, entityId?: string): Promise<string[]>;
 
   getUserNotifications(
@@ -120,13 +120,14 @@ export class NotificationRepository implements INotificationRepository {
     }
   }
 
-  async fetchBundles(): Promise<ICourseBundle[] | null> {
+  async fetchBundles(): Promise<{ bundles: ICourseBundle[]; total: number }> {
     try {
       const bundles = await BundleModel.find();
       if (!bundles) {
         throw new Error("No bundles found");
       }
-      return bundles;
+      const total = await BundleModel.countDocuments();
+      return { bundles, total };
     } catch (error) {
       throw new Error(`Failed to fetch bundles: ${error}`);
     }
@@ -198,7 +199,7 @@ export class NotificationRepository implements INotificationRepository {
       const userNotifications = await UserNotificationModel.find({
         userId,
         notificationId: { $in: notificationIds },
-      });
+      }).populate("notificationId");
 
       const readStatusMap = new Map();
       userNotifications.forEach((un) => {

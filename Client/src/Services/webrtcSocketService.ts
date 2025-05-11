@@ -77,7 +77,7 @@ export const initializeWebRTCSocket = (
     autoConnect: true,
   });
 
-  setupSocketListeners(webRTCSocket, userId);
+  setupSocketListeners(webRTCSocket);
 
   webRTCSocket.on("connect", () => {
     store.dispatch(setConnectionState(true));
@@ -96,7 +96,7 @@ export const initializeWebRTCSocket = (
   return webRTCSocket;
 };
 
-const setupSocketListeners = (socket: Socket, userId: string) => {
+const setupSocketListeners = (socket: Socket) => {
   socket.removeAllListeners();
 
   socket.on("room-joined", (data) => {

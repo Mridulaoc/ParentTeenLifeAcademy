@@ -9,7 +9,6 @@ import {
   TextField,
   Button,
   CircularProgress,
-  Alert,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -33,7 +32,7 @@ type LoginFormInputs = z.infer<typeof loginSchema>;
 const AdminLogin: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
-  const { loading, error, isAuthenticated } = useSelector(
+  const { loading, isAuthenticated } = useSelector(
     (state: RootState) => state.admin
   );
 

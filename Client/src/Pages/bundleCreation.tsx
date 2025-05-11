@@ -39,6 +39,7 @@ import { useNavigate } from "react-router-dom";
 import { compressImage, convertToFile } from "../Utils/imageCompression";
 import { toast } from "react-toastify";
 import { uploadFeaturedImage } from "../Features/courseSlice";
+import { ICreateBundleFormData } from "../Types/courseBundleTypes";
 
 const bundleSchema = z.object({
   title: z
@@ -71,7 +72,7 @@ const BundleCreation = () => {
   const [selectedCourseId, setSelectedCourseId] = useState("");
   const [isUploading, setIsUploading] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
-  const { courses, loading, currentBundle } = useSelector(
+  const { courses, currentBundle } = useSelector(
     (state: RootState) => state.bundle
   );
   const navigate = useNavigate();
@@ -164,31 +165,47 @@ const BundleCreation = () => {
       toast.error("Please uplaod featuredImage");
       return;
     }
+
+    if (!currentBundle?.courses || currentBundle.courses.length === 0) {
+      toast.error("Please add at least one course to the bundle");
+      setIsUploading(false);
+      return;
+    }
     try {
       const formData = new FormData();
       formData.append("featuredImage", featuredImageFile);
-      const featuredImageUrl = await dispatch(
+      const uploadResponse = await dispatch(
         uploadFeaturedImage(formData)
       ).unwrap();
-      const bundleData = {
+
+      const featuredImageUrl =
+        typeof uploadResponse === "string"
+          ? uploadResponse
+          : uploadResponse.url;
+
+      const totalPrice = currentBundle.courses.reduce(
+        (total, course) => total + course.price,
+        0
+      );
+      const bundleData: ICreateBundleFormData = {
         ...data,
         featuredImage: featuredImageUrl,
-        totalPrice: currentBundle?.courses.reduce(
-          (total, course) => (total = total + course.price),
-          0
-        ),
-        courses: currentBundle?.courses.map((course) => course._id),
+        totalPrice,
+        courses: currentBundle?.courses!.map((course) => course._id),
         accessPeriodDays:
           data.accessType === "lifetime" ? null : data.accessPeriodDays,
       };
-      const result = await dispatch(createBundle(bundleData)).unwrap();
+
+      await dispatch(createBundle(bundleData)).unwrap();
       reset();
       dispatch(resetBundleCourses());
       toast.success("Bundle created successfully");
       navigate("/admin/dashboard/bundles");
     } catch (error) {
-      console.error("Error creating bundle:", error);
-      toast.error(error.message);
+      if (error instanceof Error) {
+        toast.error(error.message);
+      }
+      toast.error("Error creating bundle");
     }
   };
   return (
@@ -353,7 +370,7 @@ const BundleCreation = () => {
                       <MenuItem
                         key={course._id}
                         value={course._id}
-                        disabled={currentBundle?.courses.some(
+                        disabled={currentBundle?.courses!.some(
                           (c) => c._id === course._id
                         )}
                       >
@@ -364,14 +381,14 @@ const BundleCreation = () => {
                 </FormControl>
                 <Box mt={3}>
                   <Typography variant="subtitle1" gutterBottom>
-                    Selected Courses({currentBundle?.courses.length || 0})
+                    Selected Courses({currentBundle?.courses!.length || 0})
                   </Typography>
-                  {!currentBundle?.courses.length && (
+                  {!currentBundle?.courses!.length && (
                     <Typography variant="body2" color="textSecondary">
                       No courses selected yet. Please select at least one course
                     </Typography>
                   )}
-                  {currentBundle?.courses.map((course) => (
+                  {currentBundle?.courses!.map((course) => (
                     <Card key={course._id} sx={{ mb: 2 }}>
                       <Box sx={{ display: "flex" }}>
                         <CardMedia

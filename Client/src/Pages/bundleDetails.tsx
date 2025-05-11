@@ -99,7 +99,7 @@ const BundleDetails: React.FC = () => {
     try {
       if (actionType === "addToWishlist") {
         if (!isInWishlist) {
-          const result = await dispatch(
+          await dispatch(
             addToWishlist({
               itemId: bundleId!,
               itemType: "Bundle",
@@ -129,7 +129,11 @@ const BundleDetails: React.FC = () => {
         navigate("/checkout");
       }
     } catch (error) {
-      toast.error(error.message || "An error occurred");
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("An error occurred");
+      }
     }
   };
 
@@ -182,22 +186,27 @@ const BundleDetails: React.FC = () => {
     );
   }
 
-  const totalDurationHours = currentBundle.courses?.reduce(
-    (total, course) => total + (course.durationHours || 0),
-    0
-  );
+  const totalDurationHours =
+    currentBundle.courses?.reduce(
+      (total, course) => total + (course.durationHours || 0),
+      0
+    ) ?? 0;
 
-  const totalDurationMinutes = currentBundle.courses?.reduce(
-    (total, course) => total + (course.durationMinutes || 0),
-    0
-  );
+  const totalDurationMinutes =
+    currentBundle.courses?.reduce(
+      (total, course) => total + (course.durationMinutes || 0),
+      0
+    ) ?? 0;
 
   const adjustedHours =
     totalDurationHours + Math.floor(totalDurationMinutes / 60);
   const adjustedMinutes = totalDurationMinutes % 60;
 
-  const savings = currentBundle.totalPrice - currentBundle.discountedPrice;
-  const savingsPercentage = (savings / currentBundle.totalPrice) * 100;
+  const totalPrice = currentBundle.totalPrice ?? 0;
+  const discountedPrice = currentBundle.discountedPrice ?? 0;
+
+  const savings = totalPrice - discountedPrice;
+  const savingsPercentage = totalPrice > 0 ? (savings / totalPrice) * 100 : 0;
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
@@ -378,7 +387,7 @@ const BundleDetails: React.FC = () => {
                 (bundle) =>
                   bundle.bundleId === bundleId ||
                   (typeof bundle.bundleId === "object" &&
-                    bundle.bundleId._id === bundleId)
+                    (bundle.bundleId as { _id: string })._id === bundleId)
               ) ? (
                 <Button
                   variant="contained"

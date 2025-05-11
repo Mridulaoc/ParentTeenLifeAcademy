@@ -1,3 +1,6 @@
+import { ICourse } from "./courseTypes";
+import { IUser } from "./userTypes";
+
 export interface IReviewFormData {
   rating: number;
   title: string;
@@ -14,8 +17,8 @@ export interface IAddReviewParams {
 
 export interface IReview {
   _id?: string;
-  courseId: string;
-  userId: string;
+  courseId: ICourse;
+  userId: IUser;
   rating: number;
   title: string;
   reviewText: string;

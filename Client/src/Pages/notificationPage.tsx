@@ -118,7 +118,7 @@ const NotificationsPage: React.FC = () => {
                       },
                       p: 2,
                     }}
-                    onClick={() => handleNotificationClick(notification._id)}
+                    onClick={() => handleNotificationClick(notification._id!)}
                   >
                     <ListItemText
                       primary={

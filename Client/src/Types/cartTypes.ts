@@ -2,7 +2,7 @@ import { ICourseBundle } from "./courseBundleTypes";
 import { ICourse } from "./courseTypes";
 
 export interface ICartItem {
-  item: string | ICourse | ICourseBundle;
+  item: ICourse | ICourseBundle;
   itemType: "Course" | "Bundle";
 }
 

@@ -1,3 +1,6 @@
+import { ICategory } from "./categoryTypes";
+import { ILesson } from "./lessonTypes";
+
 export interface RatingDistribution {
   1: number;
   2: number;
@@ -16,7 +19,7 @@ export interface ICourse {
   title: string;
   description: string;
   visibility: "public" | "private";
-  category: string;
+  category: ICategory;
   price: number;
   featuredImage?: string;
   introVideoUrl?: string;
@@ -24,7 +27,7 @@ export interface ICourse {
   targetAudience: string;
   durationHours: number;
   durationMinutes: number;
-  lessons: string[];
+  lessons: ILesson[];
   createdAt?: Date | null | undefined;
   reviewStats?: ReviewStats;
 }
@@ -127,7 +130,7 @@ export interface IUpdateLessonProgressInputs {
 export interface IUpdateLessonProgressResponse {
   message: string;
   progress?: {
-    userId: string;
+    userId?: string;
     courseId: string;
     lessonId: string;
     isCompleted: boolean;

@@ -61,7 +61,7 @@ export interface IFetchBundleResponse {
 export interface IBundleUpdateData {
   title: string;
   description: string;
-  courses: ICourse[];
+  courses: string[];
   totalPrice: number;
   discountedPrice: number;
   featuredImage: string;

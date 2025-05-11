@@ -23,6 +23,7 @@ import {
   TextField,
 } from "@mui/material";
 import moment from "moment";
+import { IReview } from "../Types/reviewTypes";
 
 const ReviewManagement = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -31,11 +32,12 @@ const ReviewManagement = () => {
   );
 
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
 
   const [openDialog, setOpenDialog] = useState(false);
-  const [selectedReview, setSelectedReview] = useState(null);
+  const [selectedReview, setSelectedReview] = useState<IReview | null>(null);
+
+  const limit = 10;
 
   useEffect(() => {
     dispatch(
@@ -47,10 +49,7 @@ const ReviewManagement = () => {
     );
   }, [dispatch, page, limit, searchTerm]);
 
-  const handlePageChange = (
-    event: React.ChangeEvent<unknown>,
-    value: number
-  ) => {
+  const handlePageChange = (_: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
   };
 
@@ -59,7 +58,7 @@ const ReviewManagement = () => {
     setPage(1);
   };
 
-  const handleViewReview = (review) => {
+  const handleViewReview = (review: IReview) => {
     setSelectedReview(review);
     setOpenDialog(true);
   };

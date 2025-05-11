@@ -21,15 +21,10 @@ import {
   Grid,
   Divider,
   Button,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  TextField,
 } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import moment from "moment";
-import { Close, CheckCircle, Cancel } from "@mui/icons-material";
+import { Close, CheckCircle } from "@mui/icons-material";
 import { toast } from "react-toastify";
 import { IOrder } from "../Types/orderTypes";
 
@@ -40,29 +35,25 @@ const OrderManagement: React.FC = () => {
   );
 
   const [page, setPage] = useState(1);
-  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [selectedOrder, setSelectedOrder] = useState<IOrder | null>(null);
   const [openModal, setOpenModal] = useState(false);
-  const [refundReason, setRefundReason] = useState("");
+
   const limit = 5;
 
   useEffect(() => {
     dispatch(fetchAllOrders({ page, limit }));
   }, [dispatch, page, limit]);
 
-  const handleViewDetails = (order: any) => {
+  const handleViewDetails = (order: IOrder) => {
     setSelectedOrder(order);
     setOpenModal(true);
   };
 
   const handleCloseModal = () => {
     setOpenModal(false);
-    setRefundReason("");
   };
 
-  const handlePageChange = (
-    event: React.ChangeEvent<unknown>,
-    value: number
-  ) => {
+  const handlePageChange = (_: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
   };
 
@@ -179,18 +170,22 @@ const OrderManagement: React.FC = () => {
                   <TableCell>{order.items?.length || 0}</TableCell>
                   <TableCell>₹{order.amount.toFixed(2)}</TableCell>
                   <TableCell>
-                    <Chip
-                      label={order.status}
-                      size="small"
-                      color={getStatusChipColor(order.status)}
-                    />
+                    {order.status && (
+                      <Chip
+                        label={order.status}
+                        size="small"
+                        color={getStatusChipColor(order.status)}
+                      />
+                    )}
                   </TableCell>
                   <TableCell>
-                    <Chip
-                      label={order.paymentStatus}
-                      size="small"
-                      color={getPaymentStatusChipColor(order.paymentStatus)}
-                    />
+                    {order.paymentStatus && (
+                      <Chip
+                        label={order.paymentStatus}
+                        size="small"
+                        color={getPaymentStatusChipColor(order.paymentStatus)}
+                      />
+                    )}
                   </TableCell>
                   <TableCell>
                     <Box display="flex" justifyContent="center">
@@ -334,13 +329,16 @@ const OrderManagement: React.FC = () => {
                       flexDirection="row"
                       justifyContent="space-between"
                     >
-                      <Chip
-                        label={selectedOrder.paymentStatus}
-                        color={getPaymentStatusChipColor(
-                          selectedOrder.paymentStatus
-                        )}
-                        sx={{ mt: 1 }}
-                      />
+                      {selectedOrder.paymentStatus && (
+                        <Chip
+                          label={selectedOrder.paymentStatus}
+                          color={getPaymentStatusChipColor(
+                            selectedOrder.paymentStatus
+                          )}
+                          sx={{ mt: 1 }}
+                        />
+                      )}
+
                       {selectedOrder.status === "Refund Requested" && (
                         <Button
                           variant="contained"

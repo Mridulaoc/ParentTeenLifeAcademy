@@ -81,7 +81,7 @@ const EnrolledCourses: React.FC = () => {
 
       <Grid container spacing={3}>
         {enrolledCourses.map((enrollment) => {
-          const daysRemaining = getDaysRemaining(enrollment.expiryDate);
+          const daysRemaining = getDaysRemaining(enrollment.expiryDate!);
 
           return (
             <Grid item xs={12} sm={6} md={4} key={enrollment.courseId._id}>

@@ -1,4 +1,4 @@
-import { Button } from "@mui/material";
+import { Box, Button, CircularProgress } from "@mui/material";
 import VideoCallIcon from "@mui/icons-material/VideoCall";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -33,6 +33,7 @@ const Join = () => {
     const fetchClassData = async () => {
       try {
         const response = await dispatch(fetchClass()).unwrap();
+        console.log("Response:", response);
         setClassSchedule(response);
       } catch (error) {
         console.error("Failed to fetch class data:", error);
@@ -44,10 +45,10 @@ const Join = () => {
   }, [dispatch, setClassSchedule]);
 
   useEffect(() => {
-    if (!classSchedule) return;
+    if (!classSchedule || !classSchedule.nextOccurrence) return;
     const checkTime = () => {
       const now = new Date();
-      const classStartTime = new Date(classSchedule.nextOccurrence);
+      const classStartTime = new Date(classSchedule.nextOccurrence!);
       const classEndTime = new Date(
         classStartTime.getTime() + classSchedule.duration * 60000
       );
@@ -77,7 +78,7 @@ const Join = () => {
     } else if (!isAdminRoute && user?._id && token && classSchedule) {
       userId = user._id;
       userToken = token;
-      initializeWebRTCSocket(user._id, token, false);
+      initializeWebRTCSocket(user._id, userToken, false);
     }
 
     try {
@@ -86,11 +87,18 @@ const Join = () => {
         dispatch(setError("User ID is missing. Please try logging in again."));
         return;
       }
-      const stream = await setupLocalStream();
-      if (joinRoom(classSchedule?.roomId, userId.toString())) {
-        navigate(`/room/${classSchedule?.roomId}`);
+
+      const roomId = classSchedule?.roomId;
+
+      if (!roomId) {
+        dispatch(setError("Class room ID is missing."));
+        return;
+      }
+      await setupLocalStream();
+      if (joinRoom(roomId, userId.toString())) {
+        navigate(`/room/${roomId}`);
         setTimeout(() => {
-          sendReadySignal(classSchedule?.roomId);
+          sendReadySignal(roomId);
         }, 1000);
       }
     } catch (error) {
@@ -98,6 +106,21 @@ const Join = () => {
       dispatch(setError("Failed to join class. Please try again."));
     }
   };
+
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "80vh",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
     <Button

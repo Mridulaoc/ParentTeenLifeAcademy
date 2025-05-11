@@ -185,7 +185,7 @@ export const updateLessonProgress = createAsyncThunk<
         isCompleted,
         playbackPosition,
       });
-
+      console.log("Updated lesson", response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue(handleAsyncThunkError(error));
@@ -395,15 +395,19 @@ const courseSlice = createSlice({
       })
       .addCase(updateLessonProgress.fulfilled, (state, action) => {
         state.loading = false;
-        const { lessonId, isCompleted } = action.payload.progress;
-        state.lessonsProgress = {
-          ...state.lessonsProgress,
-          [lessonId]: {
-            ...state.lessonsProgress[lessonId],
-            isCompleted,
-          },
-        };
+        const progress = action.payload.progress;
+        if (progress) {
+          const { lessonId, isCompleted } = progress;
+          state.lessonsProgress = {
+            ...state.lessonsProgress,
+            [lessonId]: {
+              ...state.lessonsProgress[lessonId],
+              isCompleted,
+            },
+          };
+        }
       })
+
       .addCase(updateLessonProgress.rejected, (state, action) => {
         state.loading = false;
         state.error =

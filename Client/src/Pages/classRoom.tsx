@@ -78,7 +78,7 @@ const ClassRoom = () => {
       if (token && user?._id) {
         try {
           if (!localStream) {
-            webrtcSocketService.setupLocalStream().catch((err) => {
+            webrtcSocketService.setupLocalStream().catch(() => {
               dispatch(setError("Failed to access camera/microphone"));
             });
           }

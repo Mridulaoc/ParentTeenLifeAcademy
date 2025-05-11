@@ -115,7 +115,7 @@ export const CourseForm: React.FC = () => {
   const onSubmit = async (data: CourseFormData) => {
     setIsUploading(true);
     try {
-      let featuredImageUrl;
+      let featuredImageUrl: string | undefined;
       let introVideoUrl = data.introVideoUrl;
 
       if (featuredImageFile) {
@@ -124,10 +124,6 @@ export const CourseForm: React.FC = () => {
         const response = await dispatch(uploadFeaturedImage(formData)).unwrap();
         featuredImageUrl =
           typeof response === "string" ? response : response.toString();
-        featuredImageUrl =
-          typeof response === "object" && response.url
-            ? response.url
-            : response;
       }
 
       if (videoType === "upload" && videoFile) {

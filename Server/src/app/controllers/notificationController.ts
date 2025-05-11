@@ -135,7 +135,7 @@ export const fetchUsersForNotification = async (
 ): Promise<void> => {
   try {
     const users = await fetchNotificationUserUseCase.execute();
-    res.status(200).json(users);
+    res.status(200).json({ users });
   } catch (error) {
     res.status(500).json({
       message:
@@ -152,7 +152,7 @@ export const fetchCourseForNotification = async (
 ): Promise<void> => {
   try {
     const courses = await fetchNotificationCourseUseCase.execute();
-    res.status(200).json(courses);
+    res.status(200).json({ courses });
   } catch (error) {
     res.status(500).json({
       message:
@@ -168,8 +168,8 @@ export const fetchBundleForNotification = async (
   res: Response
 ): Promise<void> => {
   try {
-    const bundles = await fetchBundleNotificationUseCase.execute();
-    res.status(200).json(bundles);
+    const result = await fetchBundleNotificationUseCase.execute();
+    res.status(200).json(result);
   } catch (error) {
     res.status(500).json({
       message:

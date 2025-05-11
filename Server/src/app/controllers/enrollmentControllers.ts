@@ -71,7 +71,7 @@ export const getCourses = async (
   try {
     const courses = await getAllCoursesUsecase.execute();
 
-    res.status(200).json(courses);
+    res.status(200).json({ courses });
   } catch (error) {
     if (error instanceof Error) {
       res.status(400).json({ message: error.message });

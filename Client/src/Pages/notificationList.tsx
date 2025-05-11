@@ -33,10 +33,6 @@ import {
 import { toast } from "react-toastify";
 
 const NotificationManagement = () => {
-  const { admin: adminId, token: adminToken } = useSelector(
-    (state: RootState) => state.admin
-  );
-
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [notificationToDelete, setNotificationToDelete] = useState<
     string | null
@@ -174,7 +170,7 @@ const NotificationManagement = () => {
                       <IconButton
                         size="small"
                         color="error"
-                        onClick={() => handleDeleteClick(notification._id)}
+                        onClick={() => handleDeleteClick(notification._id!)}
                       >
                         <DeleteIcon />
                       </IconButton>

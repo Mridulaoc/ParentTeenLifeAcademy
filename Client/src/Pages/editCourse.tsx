@@ -118,11 +118,16 @@ export const EditCourse: React.FC = () => {
     if (currentCourse && !isLoading) {
       const imageUrl = currentCourse.featuredImage || "";
 
+      const categoryId =
+        typeof currentCourse.category === "string"
+          ? currentCourse.category
+          : currentCourse.category._id;
+
       reset({
         title: currentCourse.title || "",
         description: currentCourse.description || "",
         visibility: currentCourse.visibility || "public",
-        category: currentCourse.category || "",
+        category: categoryId || "",
         price: currentCourse.price || 0,
         introVideoUrl: currentCourse.introVideoUrl || "",
         whatYouWillLearn: currentCourse.whatYouWillLearn || "",

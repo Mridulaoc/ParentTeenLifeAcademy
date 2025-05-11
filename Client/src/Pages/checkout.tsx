@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -40,6 +40,8 @@ import {
   KeyboardArrowDown,
   KeyboardArrowUp,
 } from "@mui/icons-material";
+import { ICourseBundle } from "../Types/courseBundleTypes";
+import { ICourse } from "../Types/courseTypes";
 
 const checkoutSchema = z.object({
   fullName: z.string().min(1, "Full name is required"),
@@ -147,7 +149,10 @@ const CheckoutPage: React.FC = () => {
       await dispatch(validateCoupon(couponCode)).unwrap();
       toast.success("Coupon applied successfully!");
     } catch (error) {
-      toast.error(error?.message || "Failed to apply coupon");
+      if (error instanceof Error) {
+        toast.error(error.message);
+      }
+      toast.error("Error applying coupon");
     }
   };
 
@@ -167,10 +172,15 @@ const CheckoutPage: React.FC = () => {
       const orderData = {
         amount: finalTotal * 100,
         currency: "INR",
-        billingAddress: `${data.address.line1}, ${data.address.line2 || ""}, ${
-          data.address.city
-        }, ${data.address.state} - ${data.address.pincode}`,
-        couponCode: coupon ? coupon.code : null,
+        billingAddress: {
+          line1: data.address.line1,
+          line2: data.address.line2,
+          city: data.address.city,
+          state: data.address.state,
+          country: data.address.country,
+          postalCode: data.address.pincode,
+        },
+        couponCode: coupon?.code,
         subtotal: subtotal,
         discount: discount,
         tax: gstAmount,
@@ -205,13 +215,17 @@ const CheckoutPage: React.FC = () => {
               result.redirectedTo ||
                 `/paymentSuccess?reference=${razorpay_payment_id}`
             );
-          } catch (error) {
+          } catch (error: unknown) {
             const errorMessage =
-              error.message || "Payment verification failed. Please try again.";
-            toast.error(errorMessage);
+              error instanceof Error
+                ? error.message
+                : "Payment verification failed. Please try again.";
+
             const redirectedTo =
-              error.redirectedTo ||
+              (error as { redirectedTo?: string })?.redirectedTo ||
               `/payment-failed?orderId=${orderId}&error=verification_failed`;
+
+            toast.error(errorMessage);
             rzp.close();
             navigate(redirectedTo);
           }
@@ -219,7 +233,7 @@ const CheckoutPage: React.FC = () => {
         modal: {
           escape: false,
           confirm_close: true,
-          ondismiss: async function (event: any) {
+          ondismiss: async function () {
             if (isCancelling) return;
             setIsCancelling(true);
 
@@ -230,8 +244,13 @@ const CheckoutPage: React.FC = () => {
               toast.success("Payment Cancelled");
               rzp.close();
               navigate(`/payment-cancelled?orderId=${orderId}`);
-            } catch (error) {
-              toast.error("Error cancelling payment");
+            } catch (error: unknown) {
+              const errorMessage =
+                error instanceof Error
+                  ? error.message
+                  : "Error cancelling payment";
+
+              toast.error(errorMessage);
               rzp.close();
               navigate(`/payment-cancelled?orderId=${orderId}`);
             } finally {
@@ -303,7 +322,7 @@ const CheckoutPage: React.FC = () => {
           minHeight: "80vh",
         }}
       >
-        <Alert severity="error">{error}</Alert>
+        <Alert severity="error">{cartError}</Alert>
       </Box>
     );
   }
@@ -551,8 +570,8 @@ const CheckoutPage: React.FC = () => {
                   <Typography variant="body1" color="primary">
                     ₹
                     {itemType === "Bundle"
-                      ? item.discountedPrice?.toFixed(2)
-                      : item.price?.toFixed(2)}
+                      ? (item as ICourseBundle).discountedPrice?.toFixed(2)
+                      : (item as ICourse).price?.toFixed(2)}
                   </Typography>
                 </Box>
               );

@@ -1,3 +1,5 @@
+import { IUser } from "./userTypes";
+
 export interface ICartItem {
   itemId: string;
   itemType: "Course" | "Bundle";
@@ -9,7 +11,7 @@ export interface IOrder {
   _id?: string;
   orderId: string;
   amount: number;
-  userId: string;
+  userId: IUser;
   items: ICartItem[] | null;
   billingAddress: string;
   status?: string;
@@ -22,6 +24,7 @@ export interface IOrder {
   tax?: number;
   createdAt?: Date;
   updatedAt?: Date;
+  paymentId?: string;
 }
 export interface IOrderFormData {
   amount: number;

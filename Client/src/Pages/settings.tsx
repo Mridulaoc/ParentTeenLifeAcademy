@@ -65,7 +65,7 @@ const Settings = () => {
   const { user, loading, error } = useSelector(
     (state: RootState) => state.user
   );
-  const fileInputRef = useRef<HTMLInputElement>();
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const navigate = useNavigate();
   const {
     register,
@@ -99,7 +99,7 @@ const Settings = () => {
 
   const onSubmit = async (data: SettingsFormData) => {
     try {
-      await dispatch(updateUserProfile(data));
+      await dispatch(updateUserProfile({ userData: data }));
       toast.success("Profile updated successfully");
       navigate("/dashboard/profile");
     } catch (err) {
@@ -128,7 +128,10 @@ const Settings = () => {
         await dispatch(uploadProfileImage(file));
         toast.success("Profile image uploaded successfully");
       } catch (error) {
-        toast.error("Error uploading profile image");
+        if (error instanceof Error) {
+          toast.error(error.message);
+        }
+        toast.error("Could not upload profile image");
       }
     }
   };

@@ -167,7 +167,7 @@ const AdminChat = () => {
     const messageData = {
       content: message.trim(),
       sender: "admin",
-      senderId: admin?._id,
+      senderId: admin,
       timestamp: new Date().toISOString(),
       read: false,
     };
@@ -193,10 +193,7 @@ const AdminChat = () => {
       chat.student?.firstName
         ?.toLowerCase()
         .includes(searchTerm.toLowerCase()) ||
-      chat.student?.lastName
-        ?.toLowerCase()
-        .includes(searchTerm.toLowerCase()) ||
-      chat.student?.username?.toLowerCase().includes(searchTerm.toLowerCase())
+      chat.student?.lastName?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const isCurrentStudentOnline =
@@ -334,7 +331,9 @@ const AdminChat = () => {
                             }
                             primaryTypographyProps={{
                               fontWeight:
-                                chat.unreadCount > 0 ? "bold" : "normal",
+                                chat.unreadCount && chat.unreadCount > 0
+                                  ? "bold"
+                                  : "normal",
                             }}
                           />
                           <Typography variant="caption" color="text.secondary">
@@ -531,7 +530,7 @@ const AdminChat = () => {
                             <Avatar
                               sx={{ ml: 1 }}
                               src={currentChat.admin?.profileImg}
-                              alt={admin?.name}
+                              alt={admin}
                             ></Avatar>
                           )}
                         </Box>

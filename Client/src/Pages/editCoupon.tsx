@@ -64,7 +64,7 @@ const EditCoupon: React.FC = () => {
   const {
     control,
     handleSubmit,
-    setValue,
+
     watch,
     reset,
     formState: { errors },
@@ -99,7 +99,7 @@ const EditCoupon: React.FC = () => {
       reset({
         code: coupon.code || "",
         discountType: coupon.discountType === "fixed" ? "fixed" : "percentage",
-        discountValue: parseFloat(coupon.discountValue) || 0,
+        discountValue: coupon.discountValue || 0,
         expiryDate: formattedDate,
         isActive: coupon.isActive,
       });
@@ -133,6 +133,9 @@ const EditCoupon: React.FC = () => {
         }
       }
     } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      }
       toast.error("An error occurred while updating coupon.");
     }
   };

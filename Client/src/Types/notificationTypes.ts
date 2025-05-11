@@ -39,11 +39,11 @@ export interface IFetchNotificationResponse {
 }
 
 export interface IFetchUserResponse {
-  users: IUser[] | null;
+  users: IUser[];
 }
 
 export interface IFetchCourseResponse {
-  courses: ICourse[] | null;
+  courses: ICourse[];
 }
 
 export interface IFetchBundleResponse {
@@ -79,10 +79,14 @@ export interface IDeleteNotificationResponse {
 
 export interface IUserNotification {
   _id?: string;
-  userId: string;
-  notificationId: string;
+  createdAt: string | Date;
   isRead: boolean;
-  createdAt?: Date;
+  message: string;
+  targetEntity: string;
+  targetType: string;
+  targetUsers: string[];
+  title: string;
+  updatedAt: string | Date;
 }
 export interface IUserNotificationsResponse {
   notifications: IUserNotification[];

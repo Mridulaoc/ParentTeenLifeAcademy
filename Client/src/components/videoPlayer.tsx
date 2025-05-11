@@ -12,7 +12,7 @@ const VideoPlayer: React.FC<IVideoPlayerProps> = ({
   onVideoComplete,
 }) => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  const [isLoading, setIsLoading] = useState(true);
+
   const [error, setError] = useState<string | null>(null);
   const [hasEnded, setHasEnded] = useState(false);
   const playerRef = useRef<Player | null>(null);
@@ -25,26 +25,20 @@ const VideoPlayer: React.FC<IVideoPlayerProps> = ({
         const player = new Player(iframeRef.current);
         playerRef.current = player;
 
-        player.on("loaded", () => {
-          setIsLoading(false);
-        });
+        player.on("loaded", () => {});
 
         player.on("error", () => {
           setError("Failed to load video");
-          setIsLoading(false);
         });
 
         player.on("ended", () => {
           setHasEnded(true);
 
-          // Make sure this callback is executed
           if (onVideoComplete) {
             onVideoComplete();
           }
         });
       }
-    } else {
-      setIsLoading(false);
     }
 
     // Cleanup function
@@ -61,7 +55,7 @@ const VideoPlayer: React.FC<IVideoPlayerProps> = ({
     };
   }, [videoUrl, onVideoComplete, hasEnded]);
 
-  const getVimeoId = (url: string): string => {
+  const getVimeoId = (url: string): string | null => {
     const patterns = [
       /vimeo\.com\/([0-9]+)/,
       /vimeo\.com\/.*\/([0-9]+)/,
@@ -75,7 +69,7 @@ const VideoPlayer: React.FC<IVideoPlayerProps> = ({
         return match[1];
       }
     }
-    return "";
+    return null;
   };
 
   if (error) {

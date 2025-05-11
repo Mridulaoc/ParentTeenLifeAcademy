@@ -1,4 +1,3 @@
-// webRTCSlice.ts (Modified)
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { NavigateFunction } from "react-router-dom";
 import { AppDispatch, RootState } from "../Store/store";
@@ -62,11 +61,18 @@ export const initializeWebRTCSocket = createAsyncThunk(
 
 export const setupLocalStream = createAsyncThunk(
   "webRTC/setupLocalStream",
-  async () => {
+  async (): Promise<MediaStream> => {
     try {
-      return await webRTCService.setupLocalStream();
+      const stream = await webRTCService.setupLocalStream();
+      if (!stream) {
+        throw new Error("Failed to access media devices");
+      }
+      return stream;
     } catch (error) {
-      throw new Error("Failed to access media devices");
+      if (error instanceof Error) {
+        throw new Error("Failed to access media devices");
+      }
+      throw new Error("Unknown error occurred");
     }
   }
 );
@@ -89,7 +95,9 @@ export const joinRoom = createAsyncThunk(
 
       return { roomId };
     } catch (error) {
-      return rejectWithValue(error.message || "Failed to join room");
+      if (error instanceof Error) {
+        return rejectWithValue(error.message || "Failed to join room");
+      }
     }
   }
 );
@@ -117,13 +125,23 @@ export const toggleVideo = createAsyncThunk("webRTC/toggleVideo", async () => {
   return webRTCService.toggleVideo();
 });
 
-export const shareScreen = createAsyncThunk("webRTC/shareScreen", async () => {
-  try {
-    return await webRTCService.startScreenSharing();
-  } catch (error) {
-    throw new Error("Failed to share screen");
+export const shareScreen = createAsyncThunk(
+  "webRTC/shareScreen",
+  async (): Promise<MediaStream> => {
+    try {
+      const stream = await webRTCService.startScreenSharing();
+      if (!stream) {
+        throw new Error("Failed to start screen sharing");
+      }
+      return stream;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error("Failed to share screen");
+      }
+      throw new Error("Unknown error occurred while sharing screen");
+    }
   }
-});
+);
 
 export const stopScreenSharing = createAsyncThunk(
   "webRTC/stopScreenSharing",
@@ -134,8 +152,8 @@ export const stopScreenSharing = createAsyncThunk(
 
 // Handle screen sharing ended event
 export const handleScreenSharingEnded =
-  () => (dispatch: AppDispatch, getState) => {
-    const state = getState() as RootState;
+  () => (dispatch: AppDispatch, getState: () => RootState) => {
+    const state = getState();
     if (state.webRTC.isScreenSharing) {
       dispatch(stopScreenSharing());
     }
@@ -144,7 +162,7 @@ export const handleScreenSharingEnded =
 // Disconnect WebRTC socket
 export const disconnectWebRTCSocket = createAsyncThunk(
   "webRTC/disconnectSocket",
-  async ({ isAdmin }: { isAdmin: boolean }) => {
+  async () => {
     return webRTCService.disconnectWebRTCSocket();
   }
 );

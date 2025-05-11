@@ -18,6 +18,8 @@ import {
 import { RemoveShoppingCart as RemoveShoppingCartIcon } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { fetchWishlist } from "../Features/wishlistSlice";
+import { ICourseBundle } from "../Types/courseBundleTypes";
+import { ICourse } from "../Types/courseTypes";
 
 const CartPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -134,14 +136,15 @@ const CartPage: React.FC = () => {
                               fontSize: "0.875rem",
                             }}
                           >
-                            ₹{item.totalPrice?.toFixed(2)}
+                            ₹{(item as ICourseBundle).totalPrice?.toFixed(2)}
                           </Typography>
                           <Typography
                             component="span"
                             color="primary"
                             sx={{ fontSize: "0.875rem" }}
                           >
-                            ₹{item.discountedPrice?.toFixed(2)}
+                            ₹
+                            {(item as ICourseBundle).discountedPrice.toFixed(2)}
                           </Typography>
                           <Typography
                             component="span"
@@ -150,8 +153,9 @@ const CartPage: React.FC = () => {
                           >
                             (
                             {Math.round(
-                              ((item.totalPrice - item.discountedPrice) /
-                                item.totalPrice) *
+                              (((item as ICourseBundle).totalPrice -
+                                (item as ICourseBundle).discountedPrice) /
+                                (item as ICourseBundle).totalPrice) *
                                 100
                             )}
                             % OFF)
@@ -160,7 +164,7 @@ const CartPage: React.FC = () => {
                       </Box>
                     ) : (
                       <Typography variant="body1" color="primary">
-                        ₹{item.price?.toFixed(2)}
+                        ₹{(item as ICourse).price?.toFixed(2)}
                       </Typography>
                     )}
                   </Box>

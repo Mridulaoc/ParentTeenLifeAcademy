@@ -4,6 +4,7 @@ export interface ILesson {
   description?: string;
   videoUrl: string;
   createdAt?: Date | null;
+  duration?: number;
 }
 
 export interface ILessonFormData {

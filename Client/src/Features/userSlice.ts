@@ -226,6 +226,7 @@ export const fetchEnrolledCourses = createAsyncThunk<
 >("user/fetchEnrolledCourses", async (_, { rejectWithValue }) => {
   try {
     const response = await userService.fetchEnrolledCourses();
+    console.log("Enrolled courses", response.data);
     return response.data;
   } catch (error) {
     return rejectWithValue(handleAsyncThunkError(error));

@@ -2,7 +2,7 @@ import { ICourse } from "./courseTypes";
 import { ICourseBundle } from "./courseBundleTypes";
 
 export interface IWishlistItem {
-  item: string | ICourse | ICourseBundle;
+  item: ICourse | ICourseBundle;
   itemType: "Course" | "Bundle";
   _id: string;
 }

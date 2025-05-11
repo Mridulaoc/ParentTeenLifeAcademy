@@ -128,6 +128,7 @@ const CourseDetails: React.FC = () => {
   useEffect(() => {
     if (user && reviews.length > 0) {
       const review = reviews.find((review) => review.userId._id === user._id);
+      console.log("User review", review);
 
       setUserReview(review || null);
     }
@@ -157,7 +158,7 @@ const CourseDetails: React.FC = () => {
     return false;
   });
 
-  const [page, setPage] = useState(1);
+  const page = 1;
   const limit = 5;
   useEffect(() => {
     if (courseId) {
@@ -194,13 +195,13 @@ const CourseDetails: React.FC = () => {
     dispatch(
       fetchCourseReviews({ courseId: courseId!, data: { page, limit } })
     );
-    dispatch(fetchCourseDetails(courseId!));
+    dispatch(fetchCourseDetails({ courseId: courseId! }));
     reset();
     setReviewModalOpen(false);
     setIsSubmitting(false);
   };
   const handleDeleteReview = async () => {
-    if (userReview) {
+    if (userReview && courseId) {
       await dispatch(
         deleteReview({ courseId: courseId!, reviewId: userReview._id! })
       ).unwrap();
@@ -208,7 +209,7 @@ const CourseDetails: React.FC = () => {
       dispatch(
         fetchCourseReviews({ courseId: courseId!, data: { page, limit } })
       );
-      dispatch(fetchCourseDetails(courseId!));
+      dispatch(fetchCourseDetails({ courseId }));
       setUserReview(null);
     }
   };
@@ -251,7 +252,11 @@ const CourseDetails: React.FC = () => {
         navigate("/checkout");
       }
     } catch (error) {
-      toast.error(error.message || "An error occurred");
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("An error occurred");
+      }
     }
   };
 
@@ -665,8 +670,8 @@ const CourseDetails: React.FC = () => {
                 value={Number(ratingValue)}
                 size="large"
                 sx={{ mb: 2, color: "secondary.main" }}
-                onChange={(event, newValue) => {
-                  setValue("rating", newValue);
+                onChange={(_, newValue) => {
+                  setValue("rating", newValue === null ? 1 : newValue);
                 }}
               />{" "}
               {errors.rating && (

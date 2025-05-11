@@ -201,7 +201,7 @@ export class ReviewRepository implements IReviewRepository {
       const totalReviews = await ReviewModel.countDocuments(filter);
 
       const reviews = await ReviewModel.find(filter)
-        .populate("courseId", "title")
+        .populate("courseId")
         .populate("userId")
         .skip(skip)
         .limit(limit);

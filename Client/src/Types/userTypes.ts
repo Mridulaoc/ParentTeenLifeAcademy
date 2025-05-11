@@ -1,3 +1,5 @@
+import { ICourse } from "./courseTypes";
+
 export interface IUser {
   _id: string;
   firstName: string;
@@ -22,7 +24,7 @@ export interface IUser {
 }
 
 export interface IEnrolledCourse {
-  courseId: string | object;
+  courseId: ICourse;
   enrollmentType: "manual" | "auto";
   enrolledAt: Date;
   progress: number;
@@ -101,15 +103,15 @@ export interface ICheckStatusResponse {
   isBlocked: boolean;
 }
 
-export interface IEnrolledCourse {
-  courseId: string | object;
-  enrollmentType: "manual" | "auto";
-  enrolledAt: Date;
-  progress: number;
-  bundleId?: string | null;
-  expiryDate?: Date | null;
-  isActive?: boolean;
-}
+// export interface IEnrolledCourse {
+//   courseId: string | object;
+//   enrollmentType: "manual" | "auto";
+//   enrolledAt: Date;
+//   progress: number;
+//   bundleId?: string | null;
+//   expiryDate?: Date | null;
+//   isActive?: boolean;
+// }
 
 export interface IUserState {
   user: IUser;

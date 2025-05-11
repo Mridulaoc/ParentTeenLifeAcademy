@@ -107,7 +107,7 @@ const StudentChat = () => {
       const result = await dispatch(getOrCreateChat(adminId)).unwrap();
       if (result && result._id) {
         joinChat(result._id);
-        const chatData = await dispatch(
+        await dispatch(
           fetchChatById({
             chatId: result._id,
             role: "student",
@@ -336,7 +336,9 @@ const StudentChat = () => {
                             }
                             primaryTypographyProps={{
                               fontWeight:
-                                chat.unreadCount > 0 ? "bold" : "normal",
+                                chat.unreadCount && chat.unreadCount > 0
+                                  ? "bold"
+                                  : "normal",
                             }}
                           />
                           <Typography
@@ -344,7 +346,9 @@ const StudentChat = () => {
                             color="text.secondary"
                             sx={{
                               fontWeight:
-                                chat.unreadCount > 0 ? "bold" : "normal",
+                                chat.unreadCount && chat.unreadCount > 0
+                                  ? "bold"
+                                  : "normal",
                             }}
                           >
                             {chat.lastUpdated &&

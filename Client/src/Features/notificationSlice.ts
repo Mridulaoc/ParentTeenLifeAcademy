@@ -69,6 +69,8 @@ export const fetchUserNotifications = createAsyncThunk<
         limit,
       });
 
+      console.log("Response", response.data);
+
       return response.data;
     } catch (error) {
       return rejectWithValue(handleAsyncThunkError(error));
@@ -274,7 +276,7 @@ const notificationSlice = createSlice({
       })
       .addCase(fetchUsers.fulfilled, (state, action) => {
         state.loading = false;
-        state.users = action.payload;
+        state.users = action.payload.users;
       })
       .addCase(fetchUsers.rejected, (state, action) => {
         state.loading = false;
@@ -288,7 +290,7 @@ const notificationSlice = createSlice({
       })
       .addCase(fetchCourses.fulfilled, (state, action) => {
         state.loading = false;
-        state.courses = action.payload;
+        state.courses = action.payload.courses;
       })
       .addCase(fetchCourses.rejected, (state, action) => {
         state.loading = false;
@@ -302,7 +304,7 @@ const notificationSlice = createSlice({
       })
       .addCase(fetchBundles.fulfilled, (state, action) => {
         state.loading = false;
-        state.bundles = action.payload;
+        state.bundles = action.payload.bundles;
       })
       .addCase(fetchBundles.rejected, (state, action) => {
         state.loading = false;

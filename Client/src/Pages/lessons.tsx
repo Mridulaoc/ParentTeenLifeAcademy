@@ -78,7 +78,7 @@ const CourseLessons: React.FC = () => {
       const formData = new FormData();
       formData.append("video", file);
       const response = await dispatch(uploadIntroVideo(formData)).unwrap();
-      setValue(`lessons.${index}.videoUrl`, response.url);
+      setValue(`lessons.${index}.videoUrl`, response);
       setVideoFiles((prev) => ({ ...prev, [index]: file }));
     } catch (error) {
       console.error("Error uploading video:", error);

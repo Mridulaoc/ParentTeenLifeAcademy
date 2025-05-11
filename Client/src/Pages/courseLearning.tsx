@@ -55,22 +55,20 @@ const CourseLearning: React.FC = () => {
     }
   }, [courseId, dispatch]);
 
-  useEffect(() => {
-    if (lessonsProgress) {
-      const completedCount = Object.values(lessonsProgress).filter(
-        (progress) => progress.isCompleted
-      ).length;
-    }
-  }, [lessonsProgress]);
+  // useEffect(() => {
+  //   if (lessonsProgress) {
+  //     const completedCount = Object.values(lessonsProgress).filter(
+  //       (progress) => progress.isCompleted
+  //     ).length;
+  //   }
+  // }, [lessonsProgress]);
 
   useEffect(() => {
     if (lessonsProgress && currentCourse?.lessons[currentLessonIndex]) {
       const lessonId = currentCourse.lessons[currentLessonIndex]._id;
       if (lessonsProgress[lessonId]) {
-        //
         setVideoCompleted(lessonsProgress[lessonId].isCompleted || false);
       } else {
-        //
         setVideoCompleted(false);
       }
     }
@@ -100,6 +98,7 @@ const CourseLearning: React.FC = () => {
 
       dispatch(updateLessonProgress(progressData))
         .then((result) => {
+          console.log(result);
           setUpdatingProgress(false);
         })
         .catch((error) => {
@@ -162,14 +161,6 @@ const CourseLearning: React.FC = () => {
   const isFirstLesson = currentLessonIndex === 0;
   const isLastLesson = currentLessonIndex === currentCourse.lessons.length - 1;
 
-  const isAllLessonsCompleted = () => {
-    if (!currentCourse || !lessonsProgress) return false;
-
-    return currentCourse.lessons.every(
-      (lesson) => lessonsProgress[lesson._id]?.isCompleted
-    );
-  };
-
   return (
     <Box sx={{ p: 3 }}>
       <Typography variant="h4" gutterBottom>
@@ -189,7 +180,11 @@ const CourseLearning: React.FC = () => {
           <Paper elevation={3} sx={{ height: "100%" }}>
             <LessonSidebar
               lessons={currentCourse.lessons.map((lesson) => ({
-                ...lesson,
+                _id: lesson._id,
+                title: lesson.title,
+                description: lesson.description || "",
+                videoUrl: lesson.videoUrl,
+                duration: lesson.duration || 0,
                 isCompleted: lessonsProgress
                   ? lessonsProgress[lesson._id]?.isCompleted || false
                   : false,
@@ -270,8 +265,7 @@ const CourseLearning: React.FC = () => {
         <Box sx={{ mt: 4 }}>
           <CourseCompletion
             courseId={courseId || ""}
-            userName={user?.firstName + user?.lastName || "Student"}
-            isCompleted={isAllLessonsCompleted()}
+            userName={user?.firstName + " " + user?.lastName || "Student"}
           />
         </Box>
       )}

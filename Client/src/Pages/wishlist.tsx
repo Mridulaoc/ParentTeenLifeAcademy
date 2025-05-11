@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../Store/store";
 import { fetchWishlist, removeFromWishlist } from "../Features/wishlistSlice";
@@ -21,8 +21,10 @@ import {
   Delete as DeleteIcon,
   ShoppingCart as ShoppingCartIcon,
 } from "@mui/icons-material";
-import { addToCart, fetchCart } from "../Features/cartSlice";
+import { addToCart } from "../Features/cartSlice";
 import { useNavigate } from "react-router-dom";
+import { ICourseBundle } from "../Types/courseBundleTypes";
+import { ICourse } from "../Types/courseTypes";
 
 const WishlistPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -157,28 +159,33 @@ const WishlistPage: React.FC = () => {
                                 color: "text.secondary",
                               }}
                             >
-                              {item.totalPrice?.toFixed(2)}
+                              {(item as ICourseBundle).totalPrice?.toFixed(2)}
                             </Typography>
                             <Typography variant="h6" color="primary">
-                              ₹{item.discountedPrice?.toFixed(2)}
+                              ₹
+                              {(item as ICourseBundle).discountedPrice?.toFixed(
+                                2
+                              )}
                             </Typography>
                           </Box>
                           <Typography variant="body2" color="success.main">
                             Save ₹
-                            {(item.totalPrice - item.discountedPrice).toFixed(
-                              2
-                            )}{" "}
+                            {(
+                              (item as ICourseBundle).totalPrice -
+                              (item as ICourseBundle).discountedPrice
+                            ).toFixed(2)}{" "}
                             (
                             {(
-                              ((item.totalPrice - item.discountedPrice) /
-                                item.totalPrice) *
+                              (((item as ICourseBundle).totalPrice -
+                                (item as ICourseBundle).discountedPrice) /
+                                (item as ICourseBundle).totalPrice) *
                               100
                             ).toFixed(0)}
                             %)
                           </Typography>
                         </>
                       ) : (
-                        `₹${item.price?.toFixed(2)}`
+                        `₹${(item as ICourse).price?.toFixed(2)}`
                       )}
                     </Typography>
                   </CardContent>

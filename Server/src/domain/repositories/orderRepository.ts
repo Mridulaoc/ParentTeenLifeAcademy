@@ -109,7 +109,7 @@ export class OrderRepository implements IOrderRepository {
     try {
       const skip = (page - 1) * limit;
       const orders = await OrderModel.find()
-        .populate("userId", "firstName lastName email")
+        .populate("userId")
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit);
