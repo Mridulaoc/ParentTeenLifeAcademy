@@ -147,12 +147,21 @@ export const createOrder = async (
       return;
     }
 
+    const formattedBillingAddress =
+      typeof billingAddress === "string"
+        ? billingAddress
+        : `${billingAddress.line1}, ${
+            billingAddress.line2 ? billingAddress.line2 + ", " : ""
+          }${billingAddress.city}, ${billingAddress.state}, ${
+            billingAddress.country
+          }, ${billingAddress.postalCode || billingAddress.pincode}`;
+
     const orderData = {
       orderId: razorpayOrder.id,
       amount: amount / 100,
       userId,
       items,
-      billingAddress,
+      billingAddress: formattedBillingAddress,
       status: "Pending",
       paymentStatus: "Pending",
       subtotal,
