@@ -20,7 +20,7 @@ const Join = () => {
     null
   );
   const [loading, setLoading] = useState(true);
-  const [isButtonEnabled, setIsButtonEnabled] = useState(false);
+  // const [isButtonEnabled, setIsButtonEnabled] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
@@ -56,15 +56,15 @@ const Join = () => {
       const fiveMinutesBefore = new Date(classStartTime.getTime() - 5 * 60000);
 
       if (now >= fiveMinutesBefore && now <= classEndTime) {
-        setIsButtonEnabled(true);
+        // setIsButtonEnabled(true);
       } else {
-        setIsButtonEnabled(false);
+        // setIsButtonEnabled(false);
       }
     };
     checkTime();
     const interval = setInterval(checkTime, 1000);
     return () => clearInterval(interval);
-  }, [classSchedule, setIsButtonEnabled]);
+  }, [classSchedule]);
 
   const handleJoinLiveClass = async () => {
     const isAdminRoute = window.location.pathname.startsWith("/admin");
@@ -128,7 +128,7 @@ const Join = () => {
       color="primary"
       startIcon={<VideoCallIcon />}
       onClick={handleJoinLiveClass}
-      disabled={isButtonEnabled && process.env.NODE_ENV === "production"}
+      // disabled={isButtonEnabled && process.env.NODE_ENV === "production"}
       sx={{
         mt: 2,
         mb: 2,
