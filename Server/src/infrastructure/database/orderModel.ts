@@ -27,6 +27,16 @@ const orderSchema = new Schema<IOrder>(
     billingAddress: {
       type: String,
       required: true,
+      set: function (address: any) {
+        if (typeof address === "object") {
+          return `${address.line1}, ${
+            address.line2 ? address.line2 + ", " : ""
+          }${address.city}, ${address.state}, ${address.country}, ${
+            address.postalCode || address.pincode
+          }`;
+        }
+        return address;
+      },
     },
     status: {
       type: String,
