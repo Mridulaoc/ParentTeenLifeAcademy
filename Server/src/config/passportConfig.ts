@@ -10,7 +10,8 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-      callbackURL: "https://parentteenlifeacademy.site/auth/google/callback",
+      callbackURL:
+        "https://www.parentteenlifeacademy.site/auth/google/callback",
       passReqToCallback: true,
     },
     async (
