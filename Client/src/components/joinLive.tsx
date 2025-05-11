@@ -128,7 +128,7 @@ const Join = () => {
       color="primary"
       startIcon={<VideoCallIcon />}
       onClick={handleJoinLiveClass}
-      disabled={!isButtonEnabled && process.env.NODE_ENV === "production"}
+      disabled={!isButtonEnabled}
       sx={{
         mt: 2,
         mb: 2,
