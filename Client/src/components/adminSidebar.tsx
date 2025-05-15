@@ -138,31 +138,39 @@ const AdminSidebar = () => {
   return (
     <div className="w-64 h-screen bg-white border-r">
       <div className="p-4">
-        {menuItems.map((item, index) => (
-          <Link
-            key={index}
-            to={item.href}
-            className={`flex items-center gap-3 px-4 py-3 rounded-lg cursor-pointer transition-colors
-          `}
-          >
-            {item.icon}
-            <Typography>{item.text}</Typography>
-            {item.showBadge && item.badgeContent > 0 && (
-              <Badge
-                badgeContent={item.badgeContent}
-                color="secondary"
-                max={99}
-                sx={{
-                  "& .MuiBadge-badge": {
-                    backgroundColor: "#3BB7F4",
-                    color: "white",
-                    fontWeight: "bold",
-                  },
-                }}
-              />
-            )}
-          </Link>
-        ))}
+        {menuItems.map((item, index) => {
+          const isActive = location.pathname === item.href;
+          return (
+            <Link
+              key={index}
+              to={item.href}
+              className={`flex items-center gap-3 px-4 py-3 rounded-lg cursor-pointer transition-colors
+        ${
+          isActive
+            ? "bg-blue-100 text-blue-600 font-semibold"
+            : "text-gray-700 hover:bg-gray-100"
+        }
+      `}
+            >
+              {item.icon}
+              <Typography>{item.text}</Typography>
+              {item.showBadge && item.badgeContent > 0 && (
+                <Badge
+                  badgeContent={item.badgeContent}
+                  color="secondary"
+                  max={99}
+                  sx={{
+                    "& .MuiBadge-badge": {
+                      backgroundColor: "#3BB7F4",
+                      color: "white",
+                      fontWeight: "bold",
+                    },
+                  }}
+                />
+              )}
+            </Link>
+          );
+        })}
       </div>
     </div>
   );
