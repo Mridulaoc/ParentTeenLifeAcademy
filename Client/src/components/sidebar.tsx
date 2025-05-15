@@ -52,7 +52,7 @@ const Sidebar: React.FC<SidebarProps> = ({ user, onItemClick }) => {
       dispatch(clearChatState());
     }
     setPrevPath(location.pathname);
-  }, [location.pathname, dispatch]);
+  }, [location.pathname, dispatch, isChatPage, prevPath]);
 
   useEffect(() => {
     if (!isChatPage && user?._id && token) {
