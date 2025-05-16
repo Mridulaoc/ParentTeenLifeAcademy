@@ -82,6 +82,7 @@ import {
   getBundleDetails,
 } from "../../app/controllers/courseBundleController";
 import { validateCoupon } from "../../app/controllers/couponController";
+import { getAllCategories } from "../../app/controllers/adminController";
 
 // Google Login Routes
 const userRouter = express.Router();
@@ -106,6 +107,7 @@ userRouter.get("/bundles", fetchAllBundles);
 userRouter.get("/bundles/:bundleId", getBundleDetails);
 userRouter.get("/courses/:courseId", getCourseDetails);
 userRouter.get("/popular-courses", getPopularCourses);
+userRouter.get("/categories", getAllCategories);
 
 // User dashboard Routes
 userRouter.get("/profile", authMiddleware, checkBlocked, getUserProfile);

@@ -20,10 +20,11 @@ import { Link, useNavigate } from "react-router-dom";
 const CategoryManagement = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { categories } = useSelector((state: RootState) => state.category);
+  const { admin } = useSelector((state: RootState) => state.admin);
   const navigate = useNavigate();
 
   useEffect(() => {
-    dispatch(fetchCategories());
+    dispatch(fetchCategories({ admin }));
   }, [dispatch]);
   const handleEditCategory = (id: string) => {
     navigate(`/admin/dashboard/categories/edit/${id}`);

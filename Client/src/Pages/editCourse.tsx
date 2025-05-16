@@ -101,7 +101,7 @@ export const EditCourse: React.FC = () => {
       try {
         if (courseId && isAdminRoute) {
           await dispatch(fetchCourseDetails({ courseId, admin }));
-          await dispatch(fetchCategories());
+          await dispatch(fetchCategories({ admin }));
         }
       } catch (error) {
         console.error("Error fetching course data:", error);

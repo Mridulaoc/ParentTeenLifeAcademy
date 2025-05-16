@@ -42,6 +42,7 @@ const Courses = () => {
   } = useSelector((state: RootState) => state.bundle);
 
   const { categories } = useSelector((state: RootState) => state.category);
+  console.log("Categories", categories);
 
   const navigate = useNavigate();
   const limit = 3;
@@ -78,7 +79,7 @@ const Courses = () => {
   }, [dispatch, page, limit, activeTab, search, category, sort]);
 
   useEffect(() => {
-    dispatch(fetchCategories());
+    dispatch(fetchCategories({ admin: null }));
   }, [dispatch]);
 
   useEffect(() => {

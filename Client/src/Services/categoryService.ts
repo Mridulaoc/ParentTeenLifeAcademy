@@ -3,12 +3,17 @@ import {
   ICategoryResponse,
   ICategoryFormData,
   ICategory,
+  ICategoryInput,
 } from "../Types/categoryTypes";
-import { adminApi } from "../Utils/api";
+import { adminApi, userApi } from "../Utils/api";
 
 export const categoryService = {
-  fetchAll: (): Promise<AxiosResponse<ICategoryResponse>> => {
-    return adminApi.get("/categories");
+  fetchAll: (
+    input: ICategoryInput
+  ): Promise<AxiosResponse<ICategoryResponse>> => {
+    const api = input.admin ? adminApi : userApi;
+    console.log("Api:", api);
+    return api.get("/categories");
   },
 
   addCategory: (

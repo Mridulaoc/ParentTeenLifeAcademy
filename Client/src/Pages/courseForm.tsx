@@ -61,6 +61,7 @@ export const CourseForm: React.FC = () => {
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const { categories } = useSelector((state: RootState) => state.category);
+  const { admin } = useSelector((state: RootState) => state.admin);
 
   const {
     register,
@@ -109,7 +110,7 @@ export const CourseForm: React.FC = () => {
   };
 
   useEffect(() => {
-    dispatch(fetchCategories());
+    dispatch(fetchCategories({ admin }));
   }, [dispatch]);
 
   const onSubmit = async (data: CourseFormData) => {

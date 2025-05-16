@@ -6,6 +6,10 @@ export interface ICategory {
   isDeleted?: boolean;
 }
 
+export interface ICategoryInput {
+  admin?: string | null;
+}
+
 export interface ICategoryResponse {
   categories: ICategory[];
 }

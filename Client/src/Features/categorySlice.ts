@@ -5,6 +5,7 @@ import {
   ICategory,
   ICategoryFormData,
   ICategoryState,
+  ICategoryInput,
 } from "../Types/categoryTypes";
 import { handleAsyncThunkError } from "../Utils/errorHandling";
 
@@ -25,19 +26,22 @@ const initialState: ICategoryState = {
 
 export const fetchCategories = createAsyncThunk<
   ICategoryResponse,
-  void,
+  ICategoryInput,
   { rejectValue: { message: string } }
->("category/fetchCategories", async (_, { rejectWithValue }) => {
-  try {
-    const response = await categoryService.fetchAll();
-    if (!response.data.categories || response.data.categories.length === 0) {
-      return rejectWithValue({ message: "No categories found" });
+>(
+  "category/fetchCategories",
+  async (input: ICategoryInput, { rejectWithValue }) => {
+    try {
+      const response = await categoryService.fetchAll(input);
+      if (!response.data.categories || response.data.categories.length === 0) {
+        return rejectWithValue({ message: "No categories found" });
+      }
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(handleAsyncThunkError(error));
     }
-    return response.data;
-  } catch (error) {
-    return rejectWithValue(handleAsyncThunkError(error));
   }
-});
+);
 
 export const addCategory = createAsyncThunk<
   { message: string; category: ICategory },
